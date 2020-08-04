@@ -2,7 +2,8 @@ const express = require("express");
 const router = express.Router();
 const jwt = require("jsonwebtoken");
 const userServices = require("./../../utils/users-service");
-const userAuth = require("./../middleware/user-auth");
+const adminAuth = require("./../middleware/admin-auth");
+const User = require("../../models/User");
 require("dotenv").config();
 
 // signup new user
@@ -43,12 +44,12 @@ router.post("/signin", async (req, res) => {
           token,
         });
       } else {
-        res.status(400).json({
+        res.status(404).json({
           message: "Email or password are incorrect",
         });
       }
     } else {
-      res.status(400).json({
+      res.status(404).json({
         message: "Email or password are incorrect",
       });
     }
@@ -61,20 +62,26 @@ router.post("/signin", async (req, res) => {
   }
 });
 
-router.delete("/:userId", userAuth, async (req, res, next) => {
+router.delete("/:userId", adminAuth, async (req, res, next) => {
   try {
-    const userData = await userServices.identifyUser(req);
-    // users can only delete themselves
-    if (req.params.userId == userData.id) {
-      const result = await userServices.deleteUser(req);
-      if (result) {
-        res.status(200).json({ message: "User deleted" });
-      } else {
-        res.status(500).json({ message: "Internal server error" });
-      }
+    const result = await userServices.deleteUser(req);
+    if (result) {
+      res.status(200).json({ message: "User deleted" });
     } else {
-      res.status(403).json({ message: "unauthorized" });
+      res.status(500).json({ message: "Internal server error" });
     }
+  } catch (err) {
+    if (err.errors && err.errors[0].message) {
+      return res.status(500).json({ message: err.errors[0].message });
+    }
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+router.get("/", adminAuth, async (req, res) => {
+  try {
+    const allUsers = await User.findAll();
+    res.status(200).json({ users: allUsers });
   } catch (err) {
     if (err.errors && err.errors[0].message) {
       return res.status(500).json({ message: err.errors[0].message });

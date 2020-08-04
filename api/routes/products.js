@@ -38,8 +38,13 @@ router.get("/:productId", userAuth, async (req, res) => {
 // add new product
 router.post("/", adminAuth, async (req, res) => {
   try {
-    const { name, price, img } = req.body;
-    const createdProduct = await Product.create({ name, price, img });
+    const { name, price, img, description } = req.body;
+    const createdProduct = await Product.create({
+      name,
+      price,
+      img,
+      description,
+    });
     if (createdProduct) {
       res.status(201).json(createdProduct);
     }

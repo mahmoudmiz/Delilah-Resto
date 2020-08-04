@@ -51,9 +51,13 @@ module.exports = {
   },
 
   identifyUser: async (req) => {
-    const token = req.headers.authorization.split(" ")[1];
-    const decoded = jwt.verify(token, process.env.jwt_key);
-    return decoded;
+    if (req.headers.authorization !== undefined) {
+      const token = req.headers.authorization.split(" ")[1];
+      const decoded = jwt.verify(token, process.env.jwt_key);
+      return decoded;
+    } else {
+      throw new Error(" Auth failed");
+    }
   },
   deleteUser: async (req) => {
     const result = await User.destroy({
