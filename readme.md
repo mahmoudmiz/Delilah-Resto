@@ -1,8 +1,3 @@
-# instrucciones para configurar
+# Delilah Resto
 
-- configure la conexión a la base de datos desde el archivo "base de datos" de la carpeta "config"
-  `mysql://user:pass@example.com:port/dbname.`
-- run el "archivo sql" en su servidor de base de datos para crear la base de datos y las tablas requeridas.
-- crear un archivo .env para guardar el secreto de jwt `JWT_KEY = Supersecret`
-- run "npm install" para instalar todas las dependencias de desarrollo.
-- run "npm start" para iniciar el servidor.
+* This project consisted of creating REST API that offers different endpoints using (EXPRESS JS)  to allow users to register, view a list of available products, order them from a restaurant, and admin control to delete, update products or orders status, the API consumes and generates information in a SQL database (MYSQL).
